@@ -1,0 +1,125 @@
+Multidb
+=======
+
+A simple, no-nonsense ActiveRecord extension which allows the application to switch
+between multiple database connections, such as in a master/slave environment. For example:
+
+    Multidb.use(:slave) do
+      @posts = Post.all
+    end
+    
+The extension was developed in order to support PostgreSQL 9.0's new hot standby
+support in a production environment.
+
+Randomized balancing of multiple connections within a group is supported. In the
+future, some kind of automatic balancing of read/write queries might be implemented.
+
+Testet with Rails 2.3.11. No guarantees about Rails 3.
+
+
+Comparison to other ActiveRecord extensions
+===========================================
+
+Unlike other, more full-featured extensions such as Octopus and Seamless Database Pool,
+Multidb strives to be:
+
+* Implemented using a minimal amount of
+monkeypatching magic. The only part of ActiveRecord that is overriden is
+`ActiveRecord::Base#connection`.
+
+* Non-invasive. Very small amounts of configuration and changes to the client 
+application are required.
+
+* Orthogonal. Unlike Octopus, for example, connections follow context:
+
+    Multidb.use(:master) do
+      @post = Post.find(1)
+      Multidb.use(:slave) do
+        @post.authors  # This will use the slave
+      end
+    end
+
+* Low-overhead. Since `connection` is called on every single
+database operation, it needs to be fast. Which it is: Multidb's implementation of
+`connection` incurs only a single hash lookup in `Thread.current`.
+
+However, Multidb also has fewer features. At the moment it will _not_ automatically 
+split reads and writes between database backends.
+
+
+Getting started
+===============
+
+In Rails 2.x applications without a `Gemfile`, add this to `environment.rb`:
+
+    config.gem 'ar-multidb'
+    
+In Bundler-based on Rails apps, add this to your `Gemfile`:
+
+    gem 'ar-multidb', :require => 'multidb'
+
+You may also install it as a plugin:
+
+    script/plugin install git://github.com/alexstaubo/multidb.git
+
+All that is needed is to set up your `database.yml` file:
+
+    production:
+      adapter: postgresql
+      database: myapp_production
+      username: ohoh
+      password: mymy
+      host: db1
+      multidb:
+        databases:
+          slave:
+            host: db-slave
+
+Each database entry may be a hash or an array. So this also works:
+
+    production:
+      adapter: postgresql
+      database: myapp_production
+      username: ohoh
+      password: mymy
+      host: db1
+      multidb:
+        databases:
+          slave:
+            - host: db-slave1
+            - host: db-slave2
+            
+The database hashes follow the same format as the top-level adapter configuration. In
+other words, each database connection may override the adapter, database name, username
+and so on.
+
+To use the connection, modify your code by wrapping database access logic in blocks:
+
+    Multidb.use(:slave) do
+      @posts = Post.all
+    end
+    
+To wrap entire controller requests, for example:
+
+    class PostsController < ApplicationController
+      around_filter :run_using_slave
+    
+      def run_using_slave(&block)
+        Multidb.use(:slave, &block)
+      end
+    end
+    
+You can also set the current connection for the remainder of the thread's execution:
+
+    Multidb.use(:slave)
+    # Do work
+    Multidb.use(:master)
+
+Note that the symbol `:default` will (unless you override it) refer to the default
+top-level ActiveRecord configuration.
+
+
+Legal
+=====
+
+Copyright (c) 2011 Alexander Staubo. Released under the MIT license. See the file LICENSE.
