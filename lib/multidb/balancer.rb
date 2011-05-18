@@ -20,7 +20,6 @@ module Multidb
   class Balancer
     
     def initialize(configuration)
-      @default_candidate = Candidate.new(@configuration.default_adapter)
       @candidates = {}.with_indifferent_access
       @configuration = configuration
       @configuration.raw_configuration[:databases].each_pair do |name, config|
@@ -31,6 +30,7 @@ module Multidb
           @candidates[name].push(candidate)
         end
       end
+      @default_candidate = Candidate.new(@configuration.default_adapter)
       unless @candidates.include?(:default)
         @candidates[:default] = [@default_candidate]
       end
