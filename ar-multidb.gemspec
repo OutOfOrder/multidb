@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.markdown",
     "VERSION",
+    "lib/ar-multidb.rb",
     "lib/multidb.rb",
     "lib/multidb/balancer.rb",
     "lib/multidb/configuration.rb",
