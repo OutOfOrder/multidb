@@ -20,6 +20,7 @@ module Multidb
   class Balancer
     
     def initialize(configuration)
+      @default_candidate = Candidate.new(@configuration.default_adapter)
       @candidates = {}.with_indifferent_access
       @configuration = configuration
       @configuration.raw_configuration[:databases].each_pair do |name, config|
@@ -31,7 +32,7 @@ module Multidb
         end
       end
       unless @candidates.include?(:default)
-        @candidates[:default] = [Candidate.new(@configuration.default_adapter)]
+        @candidates[:default] = [@default_candidate]
       end
     end
     
@@ -64,7 +65,7 @@ module Multidb
     end
     
     def current_connection
-      Thread.current[:multidb_connection] ||= ActiveRecord::Base.connection_pool.connection
+      Thread.current[:multidb_connection] ||= @default_candidate.connection
     end
     
     class << self
