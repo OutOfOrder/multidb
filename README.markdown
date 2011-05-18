@@ -21,7 +21,7 @@ Comparison to other ActiveRecord extensions
 ===========================================
 
 Unlike other, more full-featured extensions such as Octopus and Seamless Database Pool,
-Multidb strives to be:
+Multidb aims to be:
 
 * Implemented using a minimal amount of
 monkeypatching magic. The only part of ActiveRecord that is overriden is
@@ -32,12 +32,12 @@ application are required.
 
 * Orthogonal. Unlike Octopus, for example, connections follow context:
 
-    Multidb.use(:master) do
-      @post = Post.find(1)
-      Multidb.use(:slave) do
-        @post.authors  # This will use the slave
+      Multidb.use(:master) do
+        @post = Post.find(1)
+        Multidb.use(:slave) do
+          @post.authors  # This will use the slave
+        end
       end
-    end
 
 * Low-overhead. Since `connection` is called on every single
 database operation, it needs to be fast. Which it is: Multidb's implementation of
