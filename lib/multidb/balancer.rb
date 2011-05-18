@@ -38,7 +38,8 @@ module Multidb
     def get(name, &block)
       candidates = @candidates[name] || []
       raise ArgumentError, "No such database connection '#{name}'" if candidates.blank?
-      candidate = candidates.sample
+      candidate = candidates.respond_to?(:sample) ? 
+        candidates.sample : candidates[rand(candidates.length)]
       block_given? ? yield(candidate) : candidate
     end
     
