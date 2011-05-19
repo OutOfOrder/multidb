@@ -5,6 +5,7 @@ module Multidb
     def configure!
       activerecord_config = ActiveRecord::Base.connection_pool.connection.instance_variable_get(:@config).dup.with_indifferent_access
       default_adapter, configuration_hash = activerecord_config, activerecord_config.delete(:multidb)
+      configuration_hash ||= {}
       @configuration = Configuration.new(default_adapter, configuration_hash)
     end
 
