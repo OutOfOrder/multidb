@@ -1,15 +1,19 @@
 module Multidb
   
   class Candidate
-    def initialize(config)
-      adapter = config[:adapter]
-      begin
-        require "active_record/connection_adapters/#{adapter}_adapter"
-      rescue LoadError
-        raise "Please install the #{adapter} adapter: `gem install activerecord-#{adapter}-adapter` (#{$!})"
+    def initialize(target)
+      if target.is_a?(Hash)
+        adapter = target[:adapter]
+        begin
+          require "active_record/connection_adapters/#{adapter}_adapter"
+        rescue LoadError
+          raise "Please install the #{adapter} adapter: `gem install activerecord-#{adapter}-adapter` (#{$!})"
+        end
+        @connection_pool = ActiveRecord::ConnectionAdapters::ConnectionPool.new(
+          ActiveRecord::Base::ConnectionSpecification.new(target, "#{adapter}_connection"))
+      else
+        @connection_pool = target
       end
-      @connection_pool = ActiveRecord::ConnectionAdapters::ConnectionPool.new(
-        ActiveRecord::Base::ConnectionSpecification.new(config, "#{adapter}_connection"))
     end
     
     def connection
@@ -30,7 +34,7 @@ module Multidb
           @candidates[name].push(candidate)
         end
       end
-      @default_candidate = Candidate.new(@configuration.default_adapter)
+      @default_candidate = Candidate.new(@configuration.default_pool)
       unless @candidates.include?(:default)
         @candidates[:default] = [@default_candidate]
       end
