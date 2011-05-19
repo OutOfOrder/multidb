@@ -7,7 +7,7 @@ module Multidb
     
     def install!
       configure!
-      if @configuration and @configuration.raw_configuration[:databases].any?
+      if @configuration and not @configuration.raw_configuration[:databases].blank?
         ActiveRecord::Base.class_eval do
           include Multidb::ModelExtensions
         end
