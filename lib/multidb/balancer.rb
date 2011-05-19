@@ -16,8 +16,12 @@ module Multidb
       end
     end
     
-    def connection
-      @connection_pool.connection
+    def connection(&block)
+      if block_given?
+        @connection_pool.with_connection(&block)
+      else
+        @connection_pool.connection
+      end
     end
   end
   
@@ -51,18 +55,19 @@ module Multidb
     def use(name, &block)
       result = nil
       get(name) do |candidate|
-        connection = candidate.connection
         if block_given?
-          previous_connection, Thread.current[:multidb_connection] = 
-            Thread.current[:multidb_connection], connection
-          begin
-            result = yield
-          ensure
-            Thread.current[:multidb_connection] = previous_connection
+          candidate.connection do |connection|
+            previous_connection, Thread.current[:multidb_connection] = 
+              Thread.current[:multidb_connection], connection
+            begin
+              result = yield
+            ensure
+              Thread.current[:multidb_connection] = previous_connection
+            end
+            result
           end
-          result
         else
-          result = Thread.current[:multidb_connection] = connection
+          result = Thread.current[:multidb_connection] = candidate.connection
         end
       end
       result
