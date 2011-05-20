@@ -11,8 +11,8 @@ module Multidb
         ActiveRecord::Base.class_eval do
           include Multidb::ModelExtensions
         end
-        @balancer = Balancer.new(@configuration)
       end
+      @balancer = Balancer.new(@configuration)
     end
     
     attr_reader :balancer

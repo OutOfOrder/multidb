@@ -119,6 +119,23 @@ Note that the symbol `:default` will (unless you override it) refer to the defau
 top-level ActiveRecord configuration.
 
 
+Development mode
+================
+
+In development you will typically want `Multidb.use(:slave)` to still work, but you
+probably don't want to run multiple databases on your development box. To make `use`
+silently fall back to using the default connection, simply set `fallback: true` in
+`database.yml`:
+
+    production:
+      adapter: postgresql
+      database: myapp_production
+      username: ohoh
+      password: mymy
+      host: db1
+      multidb:
+        fallback: true
+
 Legal
 =====
 

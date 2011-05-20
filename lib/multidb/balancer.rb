@@ -30,13 +30,20 @@ module Multidb
     def initialize(configuration)
       @candidates = {}.with_indifferent_access
       @configuration = configuration
-      @configuration.raw_configuration[:databases].each_pair do |name, config|
+      (@configuration.raw_configuration[:databases] || {}).each_pair do |name, config|
         configs = config.is_a?(Array) ? config : [config]
         configs.each do |config|          
           candidate = Candidate.new(@configuration.default_adapter.merge(config))
           @candidates[name] ||= []
           @candidates[name].push(candidate)
         end
+      end
+      if @configuration.raw_configuration.include?(:fallback)
+        @fallback = @configuration.raw_configuration[:fallback]
+      elsif defined?(Rails)
+        @fallback = %w(development test).include?(Rails.env)
+      else
+        @fallback = false
       end
       @default_candidate = Candidate.new(@configuration.default_pool)
       unless @candidates.include?(:default)
@@ -45,8 +52,9 @@ module Multidb
     end
     
     def get(name, &block)
-      candidates = @candidates[name] || []
-      raise ArgumentError, "No such database connection '#{name}'" if candidates.blank?
+      candidates = @candidates[name]
+      candidates ||= @fallback ? @candidates[:default] : []
+      raise ArgumentError, "No such database connection '#{name}'" if candidates.empty?
       candidate = candidates.respond_to?(:sample) ? 
         candidates.sample : candidates[rand(candidates.length)]
       block_given? ? yield(candidate) : candidate
