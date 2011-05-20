@@ -124,12 +124,15 @@ Development mode
 
 In development you will typically want `Multidb.use(:slave)` to still work, but you
 probably don't want to run multiple databases on your development box. To make `use`
-silently fall back to using the default connection, simply set `fallback: true` in
-`database.yml`:
+silently fall back to using the default connection, Multidb can run in fallback
+mode.
 
-    production:
+If you are using Rails, this will be automatically enabled in 'development' and
+'test' environments. Otherwise, simply set `fallback: true` in `database.yml`:
+
+    development:
       adapter: postgresql
-      database: myapp_production
+      database: myapp_development
       username: ohoh
       password: mymy
       host: db1
