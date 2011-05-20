@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ar-multidb}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alexander Staubo"]
-  s.date = %q{2011-05-19}
+  s.date = %q{2011-05-20}
   s.description = %q{Multidb is an ActiveRecord extension for switching between multiple database connections, such as master/slave setups.}
   s.email = %q{alex@bengler.no}
   s.extra_rdoc_files = [
