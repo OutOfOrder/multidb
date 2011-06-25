@@ -14,32 +14,31 @@ support in a production environment.
 Randomized balancing of multiple connections within a group is supported. In the
 future, some kind of automatic balancing of read/write queries might be implemented.
 
-Testet with Rails 2.3.11. No guarantees about Rails 3.
+Tested with Rails 2.3.11. No guarantees about Rails 3.
 
 
 Comparison to other ActiveRecord extensions
 ===========================================
 
-Unlike other, more full-featured extensions such as Octopus and Seamless Database Pool,
-Multidb aims to be:
+Compared to other, more full-featured extensions such as Octopus and Seamless Database Pool:
 
-* Implemented using a minimal amount of
-monkeypatching magic. The only part of ActiveRecord that is overriden is
+**Minimal amount of monkeypatching magic**. The only part of ActiveRecord that is overridden is
 `ActiveRecord::Base#connection`.
 
-* Non-invasive. Very small amounts of configuration and changes to the client 
+**Non-invasive**. Very small amounts of configuration and changes to the client 
 application are required.
 
-* Orthogonal. Unlike Octopus, for example, connections follow context:
+**Orthogonal**. Unlike Octopus, for example, connections follow 
+context:
 
-      Multidb.use(:master) do
-        @post = Post.find(1)
-        Multidb.use(:slave) do
-          @post.authors  # This will use the slave
-        end
+    Multidb.use(:master) do
+      @post = Post.find(1)
+      Multidb.use(:slave) do
+        @post.authors  # This will use the slave
       end
+    end
 
-* Low-overhead. Since `connection` is called on every single
+**Low-overhead**. Since `connection` is called on every single
 database operation, it needs to be fast. Which it is: Multidb's implementation of
 `connection` incurs only a single hash lookup in `Thread.current`.
 
