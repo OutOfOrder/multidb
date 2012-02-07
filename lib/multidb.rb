@@ -1,3 +1,6 @@
+require 'active_record'
+require 'active_support/core_ext/module/delegation'
+
 require 'multidb/configuration'
 require 'multidb/model_extensions'
 require 'multidb/balancer'
