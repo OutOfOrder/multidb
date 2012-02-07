@@ -1,4 +1,4 @@
-source 'http://rubygems.org/'
+source "http://rubygems.org"
 
-gem 'activesupport', '>= 2.2'
-gem 'activerecord', '>= 2.2'
+# Specify your gem's dependencies in ar-multidb.gemspec
+gemspec

@@ -1,38 +1,21 @@
-# encoding: utf-8
+require "bundler/gem_tasks"
 
-require 'rubygems'
-require 'rake'
-require 'rake/rdoctask'
-
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = 'ar-multidb'
-    gem.summary = gem.description = %Q{Multidb is an ActiveRecord extension for switching between multiple database connections, such as master/slave setups.}
-    gem.email = "alex@bengler.no"
-    gem.homepage = "http://github.com/alexstaubo/multidb"
-    gem.authors = ["Alexander Staubo"]
-    gem.has_rdoc = true
-    gem.require_paths = ["lib"]
-    gem.files = FileList[%W(
-      README.markdown
-      VERSION
-      LICENSE*
-      lib/**/*
-    )]
-    gem.add_dependency 'activesupport', '>= 2.2'
-    gem.add_dependency 'activerecord', '>= 2.2'
+desc 'Bump version'
+task :bump do
+  if `git status -uno -s --porcelain | wc -l`.to_i > 0
+    abort "You have uncommitted changed."
   end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  $stderr << "Warning: Gem-building tasks are not included as Jeweler (or a dependency) not available. Install it with: `gem install jeweler`.\n"
-end
-
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "ruby-hdfs #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+  text = File.read('lib/multidb/version.rb')
+  if text =~ /VERSION = '(.*)'/
+    old_version = $1
+    version_parts = old_version.split('.')
+    version_parts[-1] = version_parts[-1].to_i + 1
+    new_version = version_parts.join('.')
+    text.gsub!(/VERSION = '(.*)'/, "VERSION = '#{new_version}'")
+    File.open('lib/multidb/version.rb', 'w') { |f| f << text }
+    (system("git add lib/multidb/version.rb") and
+      system("git commit -m 'Bump to #{new_version}.'")) or abort "Failed to commit."
+  else
+    abort "Could not find version number"
+  end
 end
