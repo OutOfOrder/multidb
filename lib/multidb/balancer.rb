@@ -30,24 +30,26 @@ module Multidb
     def initialize(configuration)
       @candidates = {}.with_indifferent_access
       @configuration = configuration
-      (@configuration.raw_configuration[:databases] || {}).each_pair do |name, config|
-        configs = config.is_a?(Array) ? config : [config]
-        configs.each do |config|          
-          candidate = Candidate.new(@configuration.default_adapter.merge(config))
-          @candidates[name] ||= []
-          @candidates[name].push(candidate)
+      if @configuration
+        (@configuration.raw_configuration[:databases] || {}).each_pair do |name, config|
+          configs = config.is_a?(Array) ? config : [config]
+          configs.each do |config|          
+            candidate = Candidate.new(@configuration.default_adapter.merge(config))
+            @candidates[name] ||= []
+            @candidates[name].push(candidate)
+          end
         end
-      end
-      if @configuration.raw_configuration.include?(:fallback)
-        @fallback = @configuration.raw_configuration[:fallback]
-      elsif defined?(Rails)
-        @fallback = %w(development test).include?(Rails.env)
-      else
-        @fallback = false
-      end
-      @default_candidate = Candidate.new(@configuration.default_pool)
-      unless @candidates.include?(:default)
-        @candidates[:default] = [@default_candidate]
+        if @configuration.raw_configuration.include?(:fallback)
+          @fallback = @configuration.raw_configuration[:fallback]
+        elsif defined?(Rails)
+          @fallback = %w(development test).include?(Rails.env)
+        else
+          @fallback = false
+        end
+        @default_candidate = Candidate.new(@configuration.default_pool)
+        unless @candidates.include?(:default)
+          @candidates[:default] = [@default_candidate]
+        end
       end
     end
     
