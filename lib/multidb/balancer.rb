@@ -84,7 +84,7 @@ module Multidb
     end
     
     def current_connection
-      Thread.current[:multidb_connection] ||= @default_candidate.connection
+      Thread.current[:multidb_connection] || @default_candidate.connection
     end
     
     class << self
