@@ -25,4 +25,8 @@ module Multidb
   end
 end
 
-Multidb.install!
+if defined?(Rails)
+  require 'multidb/railtie'
+else
+  Multidb.install!
+end
