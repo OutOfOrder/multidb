@@ -20,7 +20,7 @@ module Multidb
     
     attr_reader :balancer
 
-    delegate :use, :get, :to => :balancer
+    delegate :use, :get, :disconnect!, :to => :balancer
 
   end
 end
