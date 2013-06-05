@@ -56,7 +56,7 @@ module Multidb
     end
 
     def disconnect!
-      @candidates.each do |candidate|
+      @candidates.values.each do |candidate|
         candidate.connection_pool.disconnect!
       end
     end
