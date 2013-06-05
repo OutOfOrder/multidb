@@ -23,6 +23,8 @@ module Multidb
         @connection_pool.connection
       end
     end
+
+    attr_reader :connection_pool
   end
   
   class Balancer
@@ -52,7 +54,13 @@ module Multidb
         end
       end
     end
-    
+
+    def disconnect!
+      @candidates.each do |candidate|
+        candidate.connection_pool.disconnect!
+      end
+    end
+
     def get(name, &block)
       candidates = @candidates[name]
       candidates ||= @fallback ? @candidates[:default] : []
@@ -94,6 +102,10 @@ module Multidb
       
       def current_connection
         Multidb.balancer.current_connection
+      end
+
+      def disconnect!
+        Multidb.balancer.disconnect!
       end
     end
     
