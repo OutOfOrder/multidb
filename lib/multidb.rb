@@ -17,6 +17,10 @@ module Multidb
       end
       @balancer = Balancer.new(@configuration)
     end
+
+    def reconfigure!
+      @balancer = Balancer.new(@configuration)
+    end
     
     attr_reader :balancer
 
@@ -25,4 +29,8 @@ module Multidb
   end
 end
 
-Multidb.install!
+if defined?(Rails) && Rails::VERSION::MAJOR >= 3
+  require 'multidb/railtie'
+else
+  Multidb.install!
+end
