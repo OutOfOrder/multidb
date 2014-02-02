@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ar-multidb (0.1.10)
+    ar-multidb (0.1.11)
       activerecord (>= 3.0)
       activesupport (>= 3.0)
 
@@ -30,7 +30,7 @@ GEM
     i18n (0.6.9)
     minitest (4.7.5)
     multi_json (1.8.4)
-    rake (10.1.0)
+    rake (10.1.1)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
