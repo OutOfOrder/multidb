@@ -1,5 +1,4 @@
-Multidb
-=======
+# Multidb
 
 A simple, no-nonsense ActiveRecord extension which allows the application to switch
 between multiple database connections, such as in a master/slave environment. For example:
@@ -7,18 +6,15 @@ between multiple database connections, such as in a master/slave environment. Fo
     Multidb.use(:slave) do
       @posts = Post.all
     end
-    
+
 The extension was developed in order to support PostgreSQL 9.0's new hot standby
 support in a production environment.
 
 Randomized balancing of multiple connections within a group is supported. In the
-future, some kind of automatic balancing of read/write queries might be implemented.
-
-Tested with Rails 2.3.11. No guarantees about Rails 3.
+future, some kind of automatic balancing of read/write queries could be implemented.
 
 
-Comparison to other ActiveRecord extensions
-===========================================
+## Comparison to other ActiveRecord extensions
 
 Compared to other, more full-featured extensions such as Octopus and Seamless Database Pool:
 
@@ -45,21 +41,11 @@ database operation, it needs to be fast. Which it is: Multidb's implementation o
 However, Multidb also has fewer features. At the moment it will _not_ automatically 
 split reads and writes between database backends.
 
+## Getting started
 
-Getting started
-===============
-
-In Rails 2.x applications without a `Gemfile`, add this to `environment.rb`:
-
-    config.gem 'ar-multidb'
-    
-In Bundler-based on Rails apps, add this to your `Gemfile`:
+Add to your `Gemfile`:
 
     gem 'ar-multidb', :require => 'multidb'
-
-You may also install it as a plugin:
-
-    script/plugin install git://github.com/alexstaubo/multidb.git
 
 All that is needed is to set up your `database.yml` file:
 
@@ -87,7 +73,7 @@ Each database entry may be a hash or an array. So this also works:
           slave:
             - host: db-slave1
             - host: db-slave2
-            
+
 The database hashes follow the same format as the top-level adapter configuration. In
 other words, each database connection may override the adapter, database name, username
 and so on.
@@ -97,17 +83,25 @@ To use the connection, modify your code by wrapping database access logic in blo
     Multidb.use(:slave) do
       @posts = Post.all
     end
-    
+
 To wrap entire controller requests, for example:
 
     class PostsController < ApplicationController
-      around_filter :run_using_slave
-    
+      around_filter :run_using_slave, only: [:index]
+
+      def index
+        @posts = Post.all
+      end
+
+      def edit
+        # Won't be wrapped
+      end
+
       def run_using_slave(&block)
         Multidb.use(:slave, &block)
       end
     end
-    
+
 You can also set the current connection for the remainder of the thread's execution:
 
     Multidb.use(:slave)
@@ -117,17 +111,15 @@ You can also set the current connection for the remainder of the thread's execut
 Note that the symbol `:default` will (unless you override it) refer to the default
 top-level ActiveRecord configuration.
 
-
-Development mode
-================
+## Development mode
 
 In development you will typically want `Multidb.use(:slave)` to still work, but you
 probably don't want to run multiple databases on your development box. To make `use`
 silently fall back to using the default connection, Multidb can run in fallback
 mode.
 
-If you are using Rails, this will be automatically enabled in 'development' and
-'test' environments. Otherwise, simply set `fallback: true` in `database.yml`:
+If you are using Rails, this will be automatically enabled in `development` and
+`test` environments. Otherwise, simply set `fallback: true` in `database.yml`:
 
     development:
       adapter: postgresql
@@ -138,7 +130,6 @@ If you are using Rails, this will be automatically enabled in 'development' and
       multidb:
         fallback: true
 
-Legal
-=====
+## Legal
 
-Copyright (c) 2011 Alexander Staubo. Released under the MIT license. See the file LICENSE.
+Copyright (c) 2011-2014 Alexander Staubo. Released under the MIT license. See the file `LICENSE`.
