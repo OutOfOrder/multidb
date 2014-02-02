@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = "ar-multidb"
   s.version     = Multidb::VERSION
   s.authors     = ["Alexander Staubo"]
-  s.email       = ["alex@origo.no"]
+  s.email       = ["alex@bengler.no"]
   s.homepage    = ""
   s.summary     = s.description = %q{Multidb is an ActiveRecord extension for switching between multiple database connections, such as master/slave setups.}
 
@@ -19,4 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'activesupport', '>= 2.3'
   s.add_runtime_dependency 'activerecord', '>= 2.3'
+
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'sqlite3'
 end

@@ -1,31 +1,28 @@
 # Multidb
 
-A simple, no-nonsense ActiveRecord extension which allows the application to switch
-between multiple database connections, such as in a master/slave environment. For example:
+A simple, no-nonsense ActiveRecord extension which allows the application to switch between multiple database connections, such as in a master/slave environment. For example:
 
     Multidb.use(:slave) do
       @posts = Post.all
     end
 
-The extension was developed in order to support PostgreSQL 9.0's new hot standby
-support in a production environment.
+The extension was developed in order to support PostgreSQL 9.0's new hot standby support in a production environment.
 
-Randomized balancing of multiple connections within a group is supported. In the
-future, some kind of automatic balancing of read/write queries could be implemented.
+Randomized balancing of multiple connections within a group is supported. In the future, some kind of automatic balancing of read/write queries could be implemented.
 
+## Requirements
+
+* Ruby 2.0 or later.
 
 ## Comparison to other ActiveRecord extensions
 
 Compared to other, more full-featured extensions such as Octopus and Seamless Database Pool:
 
-**Minimal amount of monkeypatching magic**. The only part of ActiveRecord that is overridden is
-`ActiveRecord::Base#connection`.
+**Minimal amount of monkeypatching magic**. The only part of ActiveRecord that is overridden is `ActiveRecord::Base#connection`.
 
-**Non-invasive**. Very small amounts of configuration and changes to the client 
-application are required.
+**Non-invasive**. Very small amounts of configuration and changes to the client application are required.
 
-**Orthogonal**. Unlike Octopus, for example, connections follow 
-context:
+**Orthogonal**. Unlike Octopus, for example, connections follow context:
 
     Multidb.use(:master) do
       @post = Post.find(1)
@@ -34,12 +31,10 @@ context:
       end
     end
 
-**Low-overhead**. Since `connection` is called on every single
-database operation, it needs to be fast. Which it is: Multidb's implementation of
+**Low-overhead**. Since `connection` is called on every single database operation, it needs to be fast. Which it is: Multidb's implementation of
 `connection` incurs only a single hash lookup in `Thread.current`.
 
-However, Multidb also has fewer features. At the moment it will _not_ automatically 
-split reads and writes between database backends.
+However, Multidb also has fewer features. At the moment it will _not_ automatically split reads and writes between database backends.
 
 ## Getting started
 
@@ -74,9 +69,9 @@ Each database entry may be a hash or an array. So this also works:
             - host: db-slave1
             - host: db-slave2
 
-The database hashes follow the same format as the top-level adapter configuration. In
-other words, each database connection may override the adapter, database name, username
-and so on.
+If multiple elements are specified, Multidb will use the list to pick a random candidate connection.
+
+The database hashes follow the same format as the top-level adapter configuration. In other words, each database connection may override the adapter, database name, username and so on.
 
 To use the connection, modify your code by wrapping database access logic in blocks:
 
@@ -108,18 +103,13 @@ You can also set the current connection for the remainder of the thread's execut
     # Do work
     Multidb.use(:master)
 
-Note that the symbol `:default` will (unless you override it) refer to the default
-top-level ActiveRecord configuration.
+Note that the symbol `:default` will (unless you override it) refer to the default top-level ActiveRecord configuration.
 
 ## Development mode
 
-In development you will typically want `Multidb.use(:slave)` to still work, but you
-probably don't want to run multiple databases on your development box. To make `use`
-silently fall back to using the default connection, Multidb can run in fallback
-mode.
+In development you will typically want `Multidb.use(:slave)` to still work, but you probably don't want to run multiple databases on your development box. To make `use` silently fall back to using the default connection, Multidb can run in fallback mode.
 
-If you are using Rails, this will be automatically enabled in `development` and
-`test` environments. Otherwise, simply set `fallback: true` in `database.yml`:
+If you are using Rails, this will be automatically enabled in `development` and `test` environments. Otherwise, simply set `fallback: true` in `database.yml`:
 
     development:
       adapter: postgresql
@@ -129,6 +119,10 @@ If you are using Rails, this will be automatically enabled in `development` and
       host: db1
       multidb:
         fallback: true
+
+## Limitations
+
+Multidb does not support per-class connections (eg., calling `establish_connection` within a class, as opposed to `ActiveRecord::Base`).
 
 ## Legal
 

@@ -1,5 +1,5 @@
 module Multidb
-  
+
   class Candidate
     def initialize(target)
       if target.is_a?(Hash)
@@ -10,12 +10,12 @@ module Multidb
           raise "Please install the #{adapter} adapter: `gem install activerecord-#{adapter}-adapter` (#{$!})"
         end
         @connection_pool = ActiveRecord::ConnectionAdapters::ConnectionPool.new(
-          ActiveRecord::Base::ConnectionSpecification.new(target, "#{adapter}_connection"))
+          ActiveRecord::ConnectionAdapters::ConnectionSpecification.new(target, "#{adapter}_connection"))
       else
         @connection_pool = target
       end
     end
-    
+
     def connection(&block)
       if block_given?
         @connection_pool.with_connection(&block)
@@ -26,16 +26,16 @@ module Multidb
 
     attr_reader :connection_pool
   end
-  
+
   class Balancer
-    
+
     def initialize(configuration)
       @candidates = {}.with_indifferent_access
       @configuration = configuration
       if @configuration
         (@configuration.raw_configuration[:databases] || {}).each_pair do |name, config|
           configs = config.is_a?(Array) ? config : [config]
-          configs.each do |config|          
+          configs.each do |config|
             candidate = Candidate.new(@configuration.default_adapter.merge(config))
             @candidates[name] ||= []
             @candidates[name].push(candidate)
@@ -65,17 +65,17 @@ module Multidb
       candidates = @candidates[name]
       candidates ||= @fallback ? @candidates[:default] : []
       raise ArgumentError, "No such database connection '#{name}'" if candidates.empty?
-      candidate = candidates.respond_to?(:sample) ? 
+      candidate = candidates.respond_to?(:sample) ?
         candidates.sample : candidates[rand(candidates.length)]
       block_given? ? yield(candidate) : candidate
     end
-    
+
     def use(name, &block)
       result = nil
       get(name) do |candidate|
         if block_given?
           candidate.connection do |connection|
-            previous_connection, Thread.current[:multidb_connection] = 
+            previous_connection, Thread.current[:multidb_connection] =
               Thread.current[:multidb_connection], connection
             begin
               result = yield
@@ -90,16 +90,17 @@ module Multidb
       end
       result
     end
-    
+
     def current_connection
       Thread.current[:multidb_connection] || @default_candidate.connection
     end
-    
+
     class << self
+      delegate :use, :current_connection, :disconnect!, to: :balancer
       def use(name, &block)
         Multidb.balancer.use(name, &block)
       end
-      
+
       def current_connection
         Multidb.balancer.current_connection
       end
@@ -108,7 +109,7 @@ module Multidb
         Multidb.balancer.disconnect!
       end
     end
-    
+
   end
-  
+
 end

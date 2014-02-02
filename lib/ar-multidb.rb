@@ -1,1 +1,1 @@
-require 'multidb'
+require_relative 'multidb'
