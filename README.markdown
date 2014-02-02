@@ -12,7 +12,7 @@ Randomized balancing of multiple connections within a group is supported. In the
 
 ## Requirements
 
-* Ruby 2.0 or later.
+* Ruby 1.9.3 or later.
 * ActiveRecord 3.0 or later. (Earlier versions can use the gem version 0.1.10.)
 
 ## Comparison to other ActiveRecord extensions
