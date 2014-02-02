@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/atombender/multidb.png?branch=master)](https://travis-ci.org/atombender/multidb)
+
 # Multidb
 
 A simple, no-nonsense ActiveRecord extension which allows the application to switch between multiple database connections, such as in a master/slave environment. For example:
