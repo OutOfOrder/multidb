@@ -2,3 +2,4 @@
 *~
 \.DS_Store
 *.sqlite
+Gemfile.lock
