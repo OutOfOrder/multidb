@@ -9,8 +9,13 @@ module Multidb
         rescue LoadError
           raise "Please install the #{adapter} adapter: `gem install activerecord-#{adapter}-adapter` (#{$!})"
         end
+        if defined?(ActiveRecord::ConnectionAdapters::ConnectionSpecification)
+          spec_class = ActiveRecord::ConnectionAdapters::ConnectionSpecification
+        else
+          spec_class = ActiveRecord::Base::ConnectionSpecification
+        end
         @connection_pool = ActiveRecord::ConnectionAdapters::ConnectionPool.new(
-          ActiveRecord::ConnectionAdapters::ConnectionSpecification.new(target, "#{adapter}_connection"))
+          spec_class.new(target, "#{adapter}_connection"))
       else
         @connection_pool = target
       end
