@@ -3,8 +3,8 @@ require_relative 'spec_helper'
 describe 'Multidb.balancer' do
 
   context 'with no configuration' do
-    it 'returns nothing' do
-      Multidb.balancer.should eq nil
+    it 'raises exception' do
+      -> { Multidb.balancer }.should raise_error(Multidb::NotInitializedError)
     end
   end
 
@@ -29,18 +29,18 @@ describe 'Multidb.balancer' do
   end
 
   describe '#use' do
-    context 'with no configuration' do
-      it 'raises exception' do
-        -> {
-          Multidb.use(:something) do
-          end
-        }.should raise_error(ArgumentError)
-      end
-    end
-
     context 'with configuration' do
       before do
         ActiveRecord::Base.establish_connection(configuration_with_slaves)
+      end
+
+      context 'undefined connection' do
+        it 'raises exception' do
+          -> {
+            Multidb.use(:something) do
+            end
+          }.should raise_error(ArgumentError)
+        end
       end
 
       it 'returns default connection on :default' do

@@ -1,18 +1,28 @@
 module Multidb
-
-  mattr_reader :configuration
-
   class << self
     delegate :use, :get, :disconnect!, to: :balancer
   end
 
+  def self.init(config)
+    activerecord_config = config.dup.with_indifferent_access
+    default_adapter, configuration_hash = activerecord_config, activerecord_config.delete(:multidb)
+
+    @balancer = Balancer.new(Configuration.new(default_adapter, configuration_hash || {}))
+  end
+
   def self.balancer
-    @balancer ||= create_balancer
+    if @balancer
+      @balancer
+    else
+      raise NotInitializedError, "Balancer not initialized. You need to run Multidb.setup first"
+    end
   end
 
   def self.reset!
-    @balancer, @configuration = nil, nil
+    @balancer = nil
   end
+
+  class NotInitializedError < StandardError; end;
 
   class Configuration
     def initialize(default_adapter, configuration_hash)
@@ -25,30 +35,4 @@ module Multidb
     attr_reader :default_adapter
     attr_reader :raw_configuration
   end
-
-  private
-
-    def self.create_balancer
-      unless @configuration
-        begin
-          connection_pool = ActiveRecord::Base.connection_pool
-        rescue ActiveRecord::ConnectionNotEstablished
-          # Ignore
-        else
-          connection = connection_pool.connection
-
-          # FIXME: This is hacky, but apparently the only way to get at
-          #   the internal configuration hash.
-          activerecord_config = connection.instance_variable_get(:@config).dup.with_indifferent_access
-
-          default_adapter, configuration_hash = activerecord_config, activerecord_config.delete(:multidb)
-
-          @configuration = Configuration.new(default_adapter, configuration_hash || {})
-        end
-      end
-      if @configuration
-        Balancer.new(@configuration)
-      end
-    end
-
 end
