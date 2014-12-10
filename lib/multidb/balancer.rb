@@ -40,7 +40,7 @@ module Multidb
 
       if @default_configuration
 
-        create_dbs(@default_configuration.raw_configuration[:databases] || {})
+        append(@default_configuration.raw_configuration[:databases] || {})
 
         if @default_configuration.raw_configuration.include?(:fallback)
           @fallback = @default_configuration.raw_configuration[:fallback]
@@ -56,11 +56,11 @@ module Multidb
       end
     end
     
-    def create_dbs(databases)
+    def append(databases)
       databases.each_pair do |name, config|
         configs = config.is_a?(Array) ? config : [config]
         configs.each do |config|
-          candidate = Candidate.new(@default_configuration.default_adapater.merge(config))
+          candidate = Candidate.new(@default_configuration.default_adapter.merge(config))
           @candidates[name] ||= []
           @candidates[name].push(candidate)
         end
