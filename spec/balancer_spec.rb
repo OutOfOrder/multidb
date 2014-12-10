@@ -26,6 +26,23 @@ describe 'Multidb.balancer' do
 
       Multidb.balancer.current_connection.should eq conn
     end
+  
+    context 'with additional configurations' do
+      before do
+        additional_configuration = {slave4: { database: 'spec/test-slave4.sqlite' }}
+        Multidb.balancer.append(additional_configuration)
+      end
+
+      it 'makes the new database available' do
+        Multidb.use(:slave4) do
+          conn = ActiveRecord::Base.connection
+          conn.should eq Multidb.balancer.current_connection
+          list = conn.execute('pragma database_list')
+          list.length.should eq 1
+          File.basename(list[0]['file']).should eq 'test-slave4.sqlite'
+        end
+      end
+    end
   end
 
   describe '#use' do
