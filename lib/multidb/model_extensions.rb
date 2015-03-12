@@ -12,7 +12,7 @@ module Multidb
     end
 
     module ClassMethods
-      def establish_connection_with_multidb(spec = nil)
+      def establish_connection_with_multidb(spec = ENV["DATABASE_URL"])
         establish_connection_without_multidb(spec)
         Multidb.init(connection_pool.spec.config)
       end
