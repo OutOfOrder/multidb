@@ -82,15 +82,19 @@ module Multidb
           candidate.connection do |connection|
             previous_connection, Thread.current[:multidb_connection] =
               Thread.current[:multidb_connection], connection
+            previous_connection_name, Thread.current[:multidb_connection_name] =
+              Thread.current[:multidb_connection_name], name
             begin
               result = yield
             ensure
               Thread.current[:multidb_connection] = previous_connection
+              Thread.current[:multidb_connection_name] = previous_connection_name
             end
             result
           end
         else
           result = Thread.current[:multidb_connection] = candidate.connection
+          Thread.current[:multidb_connection_name] = name
         end
       end
       result
@@ -100,8 +104,12 @@ module Multidb
       Thread.current[:multidb_connection] || @default_candidate.connection
     end
 
+    def current_connection_name
+      Thread.current[:multidb_connection_name]
+    end
+
     class << self
-      delegate :use, :current_connection, :disconnect!, to: :balancer
+      delegate :use, :current_connection, :current_connection_name, :disconnect!, to: :balancer
 
       def use(name, &block)
         Multidb.balancer.use(name, &block)
@@ -109,6 +117,10 @@ module Multidb
 
       def current_connection
         Multidb.balancer.current_connection
+      end
+
+      def current_connection_name
+        Multidb.balancer.current_connection_name
       end
 
       def disconnect!
