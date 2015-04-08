@@ -65,7 +65,7 @@ module Multidb
         end
       end
     end
-    
+
     def append(databases)
       databases.each_pair do |name, config|
         configs = config.is_a?(Array) ? config : [config]
