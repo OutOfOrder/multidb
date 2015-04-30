@@ -1,5 +1,6 @@
 module Multidb
   class Balancer
+    attr_accessor :fallback
 
     def initialize(configuration)
       @candidates = {}.with_indifferent_access
