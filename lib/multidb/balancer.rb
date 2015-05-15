@@ -97,33 +97,42 @@ module Multidb
       get(name) do |candidate|
         if block_given?
           candidate.connection do |connection|
-            previous_connection, Thread.current[:multidb_connection] =
-              Thread.current[:multidb_connection], connection
-            previous_connection_name, Thread.current[:multidb_connection_name] =
-              Thread.current[:multidb_connection_name], name
+            previous_configuration = Thread.current[:multidb]
+            Thread.current[:multidb] = {
+              connection: connection,
+              connection_name: name
+            }
             begin
               result = yield
               result = result.to_a if result.is_a?(ActiveRecord::Relation)
             ensure
-              Thread.current[:multidb_connection] = previous_connection
-              Thread.current[:multidb_connection_name] = previous_connection_name
+              Thread.current[:multidb] = previous_configuration
             end
             result
           end
         else
-          result = Thread.current[:multidb_connection] = candidate.connection
-          Thread.current[:multidb_connection_name] = name
+          Thread.current[:multidb] = {
+            connection: candidate.connection,
+            connection_name: name
+          }
+          result = candidate.connection
         end
       end
       result
     end
 
     def current_connection
-      Thread.current[:multidb_connection] || @default_candidate.connection
+      if Thread.current[:multidb]
+        Thread.current[:multidb][:connection]
+      else
+        @default_candidate.connection
+      end
     end
 
     def current_connection_name
-      Thread.current[:multidb_connection_name]
+      if Thread.current[:multidb]
+        Thread.current[:multidb][:connection_name]
+      end
     end
 
     class << self
