@@ -91,6 +91,7 @@ module Multidb
               Thread.current[:multidb_connection], connection
             begin
               result = yield
+              result = result.to_a if result.is_a?(ActiveRecord::Relation)
             ensure
               Thread.current[:multidb_connection] = previous_connection
             end

@@ -82,6 +82,16 @@ describe 'Multidb.balancer' do
         end
       end
 
+      it 'returns results instead of relation' do
+        class FooBar < ActiveRecord::Base; end
+        res = Multidb.use(:slave1) do
+          ActiveRecord::Migration.verbose = false
+          ActiveRecord::Schema.define(version: 1) { create_table :foo_bars }
+          FooBar.where(id: 42)
+        end
+        res.should eq []
+      end
+
       it 'returns supports nested slave connection' do
         Multidb.use(:slave1) do
           Multidb.use(:slave2) do
