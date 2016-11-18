@@ -12,6 +12,7 @@ require_relative 'helpers'
 
 RSpec.configure do |config|
   config.include Helpers
+  config.expect_with(:rspec) { |c| c.syntax = :should }
   config.before :each do
     ActiveRecord::Base.clear_all_connections!
     Multidb.reset!

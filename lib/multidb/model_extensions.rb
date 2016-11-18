@@ -1,26 +1,25 @@
 require 'active_record/base'
 
 module Multidb
+  module Connection
+    def establish_connection(spec = nil)
+      super(spec)
+      Multidb.init(connection_pool.spec.config)
+    end
+
+    def connection
+      Multidb.balancer.current_connection
+    rescue Multidb::NotInitializedError
+      super
+    end
+  end
+
   module ModelExtensions
     extend ActiveSupport::Concern
 
     included do
       class << self
-        alias_method_chain :establish_connection, :multidb
-        alias_method_chain :connection, :multidb
-      end
-    end
-
-    module ClassMethods
-      def establish_connection_with_multidb(spec = ENV["DATABASE_URL"])
-        establish_connection_without_multidb(spec)
-        Multidb.init(connection_pool.spec.config)
-      end
-
-      def connection_with_multidb
-        Multidb.balancer.current_connection
-      rescue Multidb::NotInitializedError
-        connection_without_multidb
+        prepend Multidb::Connection
       end
     end
   end
