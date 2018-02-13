@@ -1,7 +1,9 @@
 module Multidb
 
   class Candidate
-    def initialize(target)
+    def initialize(name, target)
+      @name = name
+
       if target.is_a?(Hash)
         adapter = target[:adapter]
         begin
@@ -14,8 +16,16 @@ module Multidb
         else
           spec_class = ActiveRecord::Base::ConnectionSpecification
         end
-        @connection_pool = ActiveRecord::ConnectionAdapters::ConnectionPool.new(
-          spec_class.new(target, "#{adapter}_connection"))
+
+        spec =
+          if ActiveRecord::VERSION::MAJOR >= 5
+            # ActiveRecord 5.0.1 introduced `name` to initialize
+            spec_class.new(name, target, "#{adapter}_connection")
+          else
+            spec_class.new(target, "#{adapter}_connection")
+          end
+
+          @connection_pool = ActiveRecord::ConnectionAdapters::ConnectionPool.new(spec)
       else
         @connection_pool = target
       end
@@ -29,7 +39,7 @@ module Multidb
       end
     end
 
-    attr_reader :connection_pool
+    attr_reader :connection_pool, :name
   end
 
   class Balancer
@@ -49,7 +59,7 @@ module Multidb
         else
           @fallback = false
         end
-        @default_candidate = Candidate.new(@default_configuration.default_pool)
+        @default_candidate = Candidate.new('default', @default_configuration.default_pool)
         unless @candidates.include?(:default)
           @candidates[:default] = [@default_candidate]
         end
@@ -60,7 +70,7 @@ module Multidb
       databases.each_pair do |name, config|
         configs = config.is_a?(Array) ? config : [config]
         configs.each do |config|
-          candidate = Candidate.new(@default_configuration.default_adapter.merge(config))
+          candidate = Candidate.new(name, @default_configuration.default_adapter.merge(config))
           @candidates[name] ||= []
           @candidates[name].push(candidate)
         end

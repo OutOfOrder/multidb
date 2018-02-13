@@ -3,4 +3,5 @@
 \.DS_Store
 *.sqlite
 Gemfile.lock
+Gemfile.local
 .rspec
