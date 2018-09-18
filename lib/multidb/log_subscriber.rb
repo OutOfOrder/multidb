@@ -1,19 +1,21 @@
 module Multidb
-  module LogSubscriber
-    extend ActiveSupport::Concern
-
-    included do
-      def debug_with_multidb(msg)
-        if name = Multidb.balancer.current_connection_name
-          db = color("[DB: #{name}]", ActiveSupport::LogSubscriber::GREEN, true)
-          debug_without_multidb(db + msg)
-        else
-          debug_without_multidb(msg)
-        end
+  module LogSubscriberExtension
+    def sql(event)
+      if name = Multidb.balancer.current_connection_name
+        event.payload[:db_name] = name
       end
-      alias_method_chain :debug, :multidb
+      super
+    end
+
+    def debug(msg)
+      if name = Multidb.balancer.current_connection_name
+        db = color("[DB: #{name}]", ActiveSupport::LogSubscriber::GREEN, true)
+        super(db + msg)
+      else
+        super
+      end
     end
   end
 end
 
-ActiveRecord::LogSubscriber.send(:include, Multidb::LogSubscriber)
+ActiveRecord::LogSubscriber.prepend(Multidb::LogSubscriberExtension)
