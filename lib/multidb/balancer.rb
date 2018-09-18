@@ -132,6 +132,8 @@ module Multidb
     def current_connection_name
       if Thread.current[:multidb]
         Thread.current[:multidb][:connection_name]
+      else
+        :default
       end
     end
 
