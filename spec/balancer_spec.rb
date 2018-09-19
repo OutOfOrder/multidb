@@ -26,6 +26,12 @@ describe 'Multidb.balancer' do
 
       Multidb.balancer.current_connection.should eq conn
     end
+
+    it 'returns default connection name for default connection' do
+      conn = ActiveRecord::Base.connection
+
+      Multidb.balancer.current_connection_name.should eq :default
+    end
   
     context 'with additional configurations' do
       before do
@@ -40,6 +46,12 @@ describe 'Multidb.balancer' do
           list = conn.execute('pragma database_list')
           list.length.should eq 1
           File.basename(list[0]['file']).should eq 'test-slave4.sqlite'
+        end
+      end
+
+      it 'returns the connection name' do
+        Multidb.use(:slave4) do
+          Multidb.balancer.current_connection_name.should eq :slave4
         end
       end
     end
