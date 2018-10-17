@@ -14,7 +14,7 @@ module Multidb
     if @balancer
       @balancer
     else
-      raise NotInitializedError, "Balancer not initialized. You need to run Multidb.setup first"
+      raise NotInitializedError, "Balancer not initialized. You need to run Multidb.init first"
     end
   end
 
