@@ -93,8 +93,6 @@ module Multidb
     end
 
     class << self
-      delegate :use, :current_connection, :current_connection_name, :disconnect!, to: :balancer
-
       def use(name, &block)
         Multidb.balancer.use(name, &block)
       end
