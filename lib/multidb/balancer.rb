@@ -1,47 +1,4 @@
 module Multidb
-
-  class Candidate
-    def initialize(name, target)
-      @name = name
-
-      if target.is_a?(Hash)
-        adapter = target[:adapter]
-        begin
-          require "active_record/connection_adapters/#{adapter}_adapter"
-        rescue LoadError
-          raise "Please install the #{adapter} adapter: `gem install activerecord-#{adapter}-adapter` (#{$!})"
-        end
-        if defined?(ActiveRecord::ConnectionAdapters::ConnectionSpecification)
-          spec_class = ActiveRecord::ConnectionAdapters::ConnectionSpecification
-        else
-          spec_class = ActiveRecord::Base::ConnectionSpecification
-        end
-
-        spec =
-          if ActiveRecord::VERSION::MAJOR >= 5
-            # ActiveRecord 5.0.1 introduced `name` to initialize
-            spec_class.new(name, target, "#{adapter}_connection")
-          else
-            spec_class.new(target, "#{adapter}_connection")
-          end
-
-          @connection_pool = ActiveRecord::ConnectionAdapters::ConnectionPool.new(spec)
-      else
-        @connection_pool = target
-      end
-    end
-
-    def connection(&block)
-      if block_given?
-        @connection_pool.with_connection(&block)
-      else
-        @connection_pool.connection
-      end
-    end
-
-    attr_reader :connection_pool, :name
-  end
-
   class Balancer
 
     def initialize(configuration)
@@ -59,7 +16,7 @@ module Multidb
         else
           @fallback = false
         end
-        @default_candidate = Candidate.new('default', @default_configuration.default_pool)
+        @default_candidate = Candidate.new('default', @default_configuration.default_handler)
         unless @candidates.include?(:default)
           @candidates[:default] = [@default_candidate]
         end
@@ -78,9 +35,7 @@ module Multidb
     end
 
     def disconnect!
-      @candidates.values.flatten.each do |candidate|
-        candidate.connection_pool.disconnect!
-      end
+      @candidates.values.flatten.each(&:disconnect!)
     end
 
     def get(name, &block)

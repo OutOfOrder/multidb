@@ -22,16 +22,16 @@ module Multidb
     @balancer = nil
   end
 
-  class NotInitializedError < StandardError; end;
+  class NotInitializedError < StandardError; end
 
   class Configuration
     def initialize(default_adapter, configuration_hash)
-      @default_pool = ActiveRecord::Base.connection_pool
+      @default_handler = ActiveRecord::Base.connection_handler
       @default_adapter = default_adapter
       @raw_configuration = configuration_hash
     end
 
-    attr_reader :default_pool
+    attr_reader :default_handler
     attr_reader :default_adapter
     attr_reader :raw_configuration
   end
