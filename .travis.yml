@@ -4,9 +4,7 @@ language: ruby
 matrix:
   fast_finish: true
   include:
-    - rvm: 2.2
-      gemfile: gemfiles/activerecord40.gemfile
-    - rvm: 2.4.3
-      gemfile: gemfiles/activerecord42.gemfile
     - rvm: 2.5.0
-      gemfile: Gemfile
+      gemfile: gemfiles/activerecord51.gemfile
+    - rvm: 2.5.0
+      gemfile: gemfiles/activerecord52.gemfile
