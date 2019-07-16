@@ -134,6 +134,11 @@ describe 'Multidb.balancer' do
         end
       end
 
+      it "returns the parent connection for aliases" do
+        Multidb.use(:slave1).should_not eq Multidb.use(:slave4)
+        Multidb.use(:slave2).should eq Multidb.use(:slave4)
+      end
+
       it 'returns random candidate' do
         names = []
         100.times do
