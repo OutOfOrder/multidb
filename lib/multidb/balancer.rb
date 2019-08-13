@@ -50,9 +50,6 @@ module Multidb
       raise ArgumentError, "No such database connection '#{name}'" if candidates.empty?
       candidate = candidates.respond_to?(:sample) ?
         candidates.sample : candidates[rand(candidates.length)]
-      spec = candidate.connection_pool.spec
-      spec.config[:shard] = name
-      candidate.connection_pool.instance_variable_set(:@spec, spec)
       block_given? ? yield(candidate) : candidate
     end
 
