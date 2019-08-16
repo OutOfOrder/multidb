@@ -81,6 +81,23 @@ If multiple elements are specified, Multidb will use the list to pick a random c
 
 The database hashes follow the same format as the top-level adapter configuration. In other words, each database connection may override the adapter, database name, username and so on.
 
+You may also add an "alias" record to the configuration to support more than one name for a given database configuration.
+
+    production:
+      adapter: postgresql
+      database: myapp_production
+      username: ohoh
+      password: mymy
+      host: db1
+      multidb:
+        databases:
+          main_db:
+            host: db1-a
+          secondary_db:
+            alias: main_db
+
+With the above, `Multidb.use(:main_db)` and `Multidb.use(:secondary_db)` will work identically. This can be useful to support naming scheme migrations transparently: once your application is updated to use `secondary_db` where necessary, you can swap out the configuration.
+
 To use the connection, modify your code by wrapping database access logic in blocks:
 
     Multidb.use(:slave) do
