@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Multidb
   class << self
     delegate :use, :get, :disconnect!, to: :balancer
@@ -5,17 +7,14 @@ module Multidb
 
   def self.init(config)
     activerecord_config = config.dup.with_indifferent_access
-    default_adapter, configuration_hash = activerecord_config, activerecord_config.delete(:multidb)
+    default_adapter = activerecord_config
+    configuration_hash = activerecord_config.delete(:multidb)
 
     @balancer = Balancer.new(Configuration.new(default_adapter, configuration_hash || {}))
   end
 
   def self.balancer
-    if @balancer
-      @balancer
-    else
-      raise NotInitializedError, "Balancer not initialized. You need to run Multidb.init first"
-    end
+    @balancer || raise(NotInitializedError, 'Balancer not initialized. You need to run Multidb.init first')
   end
 
   def self.reset!
@@ -31,8 +30,6 @@ module Multidb
       @raw_configuration = configuration_hash
     end
 
-    attr_reader :default_handler
-    attr_reader :default_adapter
-    attr_reader :raw_configuration
+    attr_reader :default_handler, :default_adapter, :raw_configuration
   end
 end

@@ -1,17 +1,19 @@
+# frozen_string_literal: true
+
 module Multidb
   class Candidate
     def initialize(name, target)
       @name = name
 
-      if target.is_a?(Hash)
+      case target
+      when Hash
         @connection_handler = ActiveRecord::ConnectionAdapters::ConnectionHandler.new
         @connection_handler.establish_connection(target.merge(name: 'primary'))
-      elsif target.is_a?(ActiveRecord::ConnectionAdapters::ConnectionHandler)
+      when ActiveRecord::ConnectionAdapters::ConnectionHandler
         @connection_handler = target
       else
         raise ArgumentError, 'Connection handler not passed to target'
       end
-
     end
 
     def connection(&block)
