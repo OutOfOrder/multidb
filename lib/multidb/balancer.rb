@@ -28,6 +28,11 @@ module Multidb
       databases.each_pair do |name, config|
         configs = config.is_a?(Array) ? config : [config]
         configs.each do |config|
+          if config["alias"]
+            @candidates[name] = @candidates[config["alias"]]
+            next
+          end
+
           candidate = Candidate.new(name, @default_configuration.default_adapter.merge(config))
           @candidates[name] ||= []
           @candidates[name].push(candidate)
