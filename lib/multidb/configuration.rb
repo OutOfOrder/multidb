@@ -10,6 +10,10 @@ module Multidb
     @balancer = Balancer.new(Configuration.new(default_adapter, configuration_hash || {}))
   end
 
+  def self.balancer?
+    @balancer != nil
+  end
+
   def self.balancer
     if @balancer
       @balancer
