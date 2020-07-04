@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Alexander Staubo"]
   s.email       = ["alex@bengler.no"]
   s.homepage    = ""
-  s.summary     = s.description = %q{Multidb is an ActiveRecord extension for switching between multiple database connections, such as master/slave setups.}
+  s.summary     = s.description = %q{Multidb is an ActiveRecord extension for switching between multiple database connections, such as primary/replica setups.}
 
   s.rubyforge_project = "ar-multidb"
 

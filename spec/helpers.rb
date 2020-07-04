@@ -1,22 +1,22 @@
 module Helpers
 
-  def configuration_with_slaves
+  def configuration_with_replicas
     return YAML.load(<<-end)
 adapter: sqlite3
 database: spec/test.sqlite
 encoding: utf-8
 multidb:
   databases:
-    slave1:
-      database: spec/test-slave1.sqlite
-    slave2:
-      database: spec/test-slave2.sqlite
-    slave3:
-      - database: spec/test-slave3-1.sqlite
-      - database: spec/test-slave3-2.sqlite
-    slave_alias:
-      database: spec/test-slave2.sqlite
-      alias: slave2
+    replica1:
+      database: spec/test-replica1.sqlite
+    replica2:
+      database: spec/test-replica2.sqlite
+    replica3:
+      - database: spec/test-replica3-1.sqlite
+      - database: spec/test-replica3-2.sqlite
+    replica_alias:
+      database: spec/test-replica2.sqlite
+      alias: replica2
 end
   end
 
