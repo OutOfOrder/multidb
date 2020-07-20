@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Multidb
   class Balancer
     attr_accessor :fallback
@@ -6,34 +8,33 @@ module Multidb
       @candidates = {}.with_indifferent_access
       @default_configuration = configuration
 
-      if @default_configuration
+      return unless @default_configuration
 
-        append(@default_configuration.raw_configuration[:databases] || {})
+      append(@default_configuration.raw_configuration[:databases] || {})
 
-        if @default_configuration.raw_configuration.include?(:fallback)
-          @fallback = @default_configuration.raw_configuration[:fallback]
-        elsif defined?(Rails)
-          @fallback = %w(development test).include?(Rails.env)
-        else
-          @fallback = false
-        end
-        @default_candidate = Candidate.new('default', @default_configuration.default_handler)
-        unless @candidates.include?(:default)
-          @candidates[:default] = [@default_candidate]
-        end
-      end
+      @fallback = if @default_configuration.raw_configuration.include?(:fallback)
+                    @default_configuration.raw_configuration[:fallback]
+                  elsif defined?(Rails)
+                    %w[development test].include?(Rails.env)
+                  else
+                    false
+                  end
+
+      @default_candidate = Candidate.new('default', @default_configuration.default_handler)
+
+      @candidates[:default] = [@default_candidate] unless @candidates.include?(:default)
     end
 
     def append(databases)
       databases.each_pair do |name, config|
         configs = config.is_a?(Array) ? config : [config]
-        configs.each do |config|
-          if config["alias"]
-            @candidates[name] = @candidates[config["alias"]]
+        configs.each do |cfg|
+          if cfg['alias']
+            @candidates[name] = @candidates[cfg['alias']]
             next
           end
 
-          candidate = Candidate.new(name, @default_configuration.default_adapter.merge(config))
+          candidate = Candidate.new(name, @default_configuration.default_adapter.merge(cfg))
           @candidates[name] ||= []
           @candidates[name].push(candidate)
         end
@@ -44,16 +45,18 @@ module Multidb
       @candidates.values.flatten.each(&:disconnect!)
     end
 
-    def get(name, &block)
+    def get(name, &_block)
       candidates = @candidates[name]
       candidates ||= @fallback ? @candidates[:default] : []
+
       raise ArgumentError, "No such database connection '#{name}'" if candidates.empty?
-      candidate = candidates.respond_to?(:sample) ?
-        candidates.sample : candidates[rand(candidates.length)]
+
+      candidate = candidates.respond_to?(:sample) ? candidates.sample : candidates[rand(candidates.length)]
+
       block_given? ? yield(candidate) : candidate
     end
 
-    def use(name, &block)
+    def use(name, &_block)
       result = nil
       get(name) do |candidate|
         if block_given?
@@ -115,7 +118,5 @@ module Multidb
         Multidb.balancer.disconnect!
       end
     end
-
   end
-
 end

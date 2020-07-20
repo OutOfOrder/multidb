@@ -1,11 +1,13 @@
-environment = ENV['RACK_ENV'] ||= 'test'
+# frozen_string_literal: true
+
+ENV['RACK_ENV'] ||= 'test'
 
 require 'rspec'
 require 'yaml'
 require 'active_record'
 require 'fileutils'
 
-$LOAD_PATH.unshift(File.expand_path('../lib', __FILE__))
+$LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 require 'multidb'
 
 require_relative 'helpers'
@@ -18,7 +20,7 @@ RSpec.configure do |config|
     Multidb.reset!
   end
   config.after :each do
-    Dir.glob(File.expand_path('../test*.sqlite', __FILE__)).each do |f|
+    Dir.glob(File.expand_path('test*.sqlite', __dir__)).each do |f|
       FileUtils.rm(f)
     end
   end

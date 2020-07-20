@@ -14,7 +14,7 @@ Randomized balancing of multiple connections within a group is supported. In the
 
 ## Requirements
 
-* Ruby 2.2 or later.
+* Ruby 2.4 or later.
 * ActiveRecord 5.1 or later.
 
 ## Older releases

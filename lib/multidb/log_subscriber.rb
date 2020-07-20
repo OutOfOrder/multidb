@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 module Multidb
   module LogSubscriberExtension
     def sql(event)
-      if name = Multidb.balancer.current_connection_name
-        event.payload[:db_name] = name
-      end
+      name = Multidb.balancer.current_connection_name
+      event.payload[:db_name] = name if name
       super
     end
 
     def debug(msg)
-      if name = Multidb.balancer.current_connection_name
+      name = Multidb.balancer.current_connection_name
+      if name
         db = color("[DB: #{name}]", ActiveSupport::LogSubscriber::GREEN, true)
         super(db + msg)
       else

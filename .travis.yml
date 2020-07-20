@@ -1,10 +1,15 @@
 sudo: false
 language: ruby
+cache: bundler
+
+script:
+  - bundle exec rubocop
+  - bundle exec rspec
 
 matrix:
   fast_finish: true
   include:
-    - rvm: 2.5.0
+    - rvm: 2.5
       gemfile: gemfiles/activerecord51.gemfile
-    - rvm: 2.5.0
+    - rvm: 2.5
       gemfile: gemfiles/activerecord52.gemfile

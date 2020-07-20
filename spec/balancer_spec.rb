@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require_relative 'spec_helper'
 
 describe 'Multidb.balancer' do
-
   context 'with no configuration' do
     it 'raises exception' do
       -> { Multidb.balancer }.should raise_error(Multidb::NotInitializedError)
@@ -28,14 +29,14 @@ describe 'Multidb.balancer' do
     end
 
     it 'returns default connection name for default connection' do
-      conn = ActiveRecord::Base.connection
+      ActiveRecord::Base.connection
 
       Multidb.balancer.current_connection_name.should eq :default
     end
 
     context 'with additional configurations' do
       before do
-        additional_configuration = {replica4: { database: 'spec/test-replica4.sqlite' }}
+        additional_configuration = { replica4: { database: 'spec/test-replica4.sqlite' } }
         Multidb.balancer.append(additional_configuration)
       end
 
@@ -65,7 +66,7 @@ describe 'Multidb.balancer' do
 
       context 'undefined connection' do
         it 'raises exception' do
-          -> {
+          lambda {
             Multidb.use(:something) do
             end
           }.should raise_error(ArgumentError)
@@ -73,7 +74,7 @@ describe 'Multidb.balancer' do
       end
 
       it 'returns default connection on :default' do
-        conn = ActiveRecord::Base.connection
+        ActiveRecord::Base.connection
         Multidb.use(:default) do
           conn2 = ActiveRecord::Base.connection
           conn2.should eq Multidb.balancer.current_connection
@@ -155,5 +156,4 @@ describe 'Multidb.balancer' do
       end
     end
   end
-
 end
