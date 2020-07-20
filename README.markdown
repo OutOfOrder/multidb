@@ -2,9 +2,9 @@
 
 # Multidb
 
-A simple, no-nonsense ActiveRecord extension which allows the application to switch between multiple database connections, such as in a master/slave environment. For example:
+A simple, no-nonsense ActiveRecord extension which allows the application to switch between multiple database connections, such as in a primary/replica environment. For example:
 
-    Multidb.use(:slave) do
+    Multidb.use(:replica) do
       @posts = Post.all
     end
 
@@ -32,10 +32,10 @@ Compared to other, more full-featured extensions such as Octopus and Seamless Da
 
 **Orthogonal**. Unlike Octopus, for example, connections follow context:
 
-    Multidb.use(:master) do
+    Multidb.use(:primary) do
       @post = Post.find(1)
-      Multidb.use(:slave) do
-        @post.authors  # This will use the slave
+      Multidb.use(:replica) do
+        @post.authors  # This will use the replica
       end
     end
 
@@ -60,8 +60,8 @@ All that is needed is to set up your `database.yml` file:
       host: db1
       multidb:
         databases:
-          slave:
-            host: db-slave
+          replica:
+            host: db-replica
 
 Each database entry may be a hash or an array. So this also works:
 
@@ -73,9 +73,9 @@ Each database entry may be a hash or an array. So this also works:
       host: db1
       multidb:
         databases:
-          slave:
-            - host: db-slave1
-            - host: db-slave2
+          replica:
+            - host: db-replica1
+            - host: db-replica2
 
 If multiple elements are specified, Multidb will use the list to pick a random candidate connection.
 
@@ -100,14 +100,14 @@ With the above, `Multidb.use(:main_db)` and `Multidb.use(:secondary_db)` will wo
 
 To use the connection, modify your code by wrapping database access logic in blocks:
 
-    Multidb.use(:slave) do
+    Multidb.use(:replica) do
       @posts = Post.all
     end
 
 To wrap entire controller requests, for example:
 
     class PostsController < ApplicationController
-      around_filter :run_using_slave, only: [:index]
+      around_filter :run_using_replica, only: [:index]
 
       def index
         @posts = Post.all
@@ -117,22 +117,22 @@ To wrap entire controller requests, for example:
         # Won't be wrapped
       end
 
-      def run_using_slave(&block)
-        Multidb.use(:slave, &block)
+      def run_using_replica(&block)
+        Multidb.use(:replica, &block)
       end
     end
 
 You can also set the current connection for the remainder of the thread's execution:
 
-    Multidb.use(:slave)
+    Multidb.use(:replica)
     # Do work
-    Multidb.use(:master)
+    Multidb.use(:primary)
 
 Note that the symbol `:default` will (unless you override it) refer to the default top-level ActiveRecord configuration.
 
 ## Development mode
 
-In development you will typically want `Multidb.use(:slave)` to still work, but you probably don't want to run multiple databases on your development box. To make `use` silently fall back to using the default connection, Multidb can run in fallback mode.
+In development you will typically want `Multidb.use(:replica)` to still work, but you probably don't want to run multiple databases on your development box. To make `use` silently fall back to using the default connection, Multidb can run in fallback mode.
 
 If you are using Rails, this will be automatically enabled in `development` and `test` environments. Otherwise, simply set `fallback: true` in `database.yml`:
 
