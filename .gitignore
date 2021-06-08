@@ -4,4 +4,7 @@
 *.sqlite
 Gemfile.lock
 Gemfile.local
+gemfiles/*.lock
+.ruby-version
+.ruby-gemset
 .rspec

@@ -13,3 +13,5 @@ matrix:
       gemfile: gemfiles/activerecord51.gemfile
     - rvm: 2.5
       gemfile: gemfiles/activerecord52.gemfile
+    - rvm: 2.5
+      gemfile: gemfiles/activerecord60.gemfile
