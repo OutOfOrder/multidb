@@ -96,11 +96,13 @@ describe 'Multidb.balancer' do
       end
 
       it 'returns results instead of relation' do
-        class FooBar < ActiveRecord::Base; end
+        foobar_class = Class.new(ActiveRecord::Base) do
+          self.table_name = 'foo_bars'
+        end
         res = Multidb.use(:replica1) do
           ActiveRecord::Migration.verbose = false
           ActiveRecord::Schema.define(version: 1) { create_table :foo_bars }
-          FooBar.where(id: 42)
+          foobar_class.where(id: 42)
         end
         res.should eq []
       end
