@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.email       = ['alex@bengler.no', 'urkle@outoforder.cc']
   s.homepage    = ''
   s.summary     = s.description = 'Multidb is an ActiveRecord extension for switching between multiple database connections, such as primary/replica setups.'
+  s.license     = 'MIT'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
