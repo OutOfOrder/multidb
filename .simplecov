@@ -3,6 +3,8 @@
 SimpleCov.configure do
   enable_coverage :branch
   add_filter '/spec/'
+  add_filter 'lib/multidb/version.rb'
+  add_filter 'lib/ar-multidb.rb'
 
   add_group 'Binaries', '/bin/'
   add_group 'Libraries', '/lib/'

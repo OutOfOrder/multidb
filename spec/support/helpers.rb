@@ -16,8 +16,11 @@ module Helpers
             - database: spec/test-replica3-1.sqlite
             - database: spec/test-replica3-2.sqlite
           replica_alias:
-            database: spec/test-replica2.sqlite
             alias: replica2
     YAML
   end
+end
+
+RSpec.configure do |config|
+  config.include Helpers
 end

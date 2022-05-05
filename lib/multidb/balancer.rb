@@ -26,7 +26,7 @@ module Multidb
     end
 
     def append(databases)
-      databases.each_pair do |name, config|
+      databases.with_indifferent_access.each_pair do |name, config|
         configs = config.is_a?(Array) ? config : [config]
         configs.each do |cfg|
           if cfg['alias']
@@ -51,7 +51,7 @@ module Multidb
 
       raise ArgumentError, "No such database connection '#{name}'" if candidates.empty?
 
-      candidate = candidates.respond_to?(:sample) ? candidates.sample : candidates[rand(candidates.length)]
+      candidate = candidates.sample
 
       block_given? ? yield(candidate) : candidate
     end
