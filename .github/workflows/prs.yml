@@ -23,6 +23,7 @@ jobs:
         - '5.1'
         - '5.2'
         - '6.0'
+        - '6.1'
         exclude:
         - ruby: '3.0'
           activerecord: '5.1'

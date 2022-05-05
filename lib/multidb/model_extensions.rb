@@ -6,7 +6,13 @@ module Multidb
   module Connection
     def establish_connection(spec = nil)
       super(spec)
-      Multidb.init(connection_pool.spec.config)
+      config = if connection_pool.respond_to?(:db_config)
+                 connection_pool.db_config.configuration_hash
+               else
+                 connection_pool.spec.config
+               end
+
+      Multidb.init(config)
     end
 
     def connection

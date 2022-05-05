@@ -18,7 +18,7 @@ RSpec.describe Multidb::Candidate do
         expect(handler).to an_instance_of(ActiveRecord::ConnectionAdapters::ConnectionHandler)
       end
 
-      it 'merges the name: primary into the hash' do
+      it 'merges the name: primary into the hash', rails: '< 6.1' do
         handler = instance_double('ActiveRecord::ConnectionAdapters::ConnectionHandler')
         allow(ActiveRecord::ConnectionAdapters::ConnectionHandler).to receive(:new).and_return(handler)
         allow(handler).to receive(:establish_connection)
@@ -68,7 +68,7 @@ RSpec.describe Multidb::Candidate do
       it 'calls retrieve_connection_pool' do
         subject.connection { |_| nil }
 
-        expect(target).to have_received(:retrieve_connection_pool).with('primary')
+        expect(target).to have_received(:retrieve_connection_pool).with(Multidb::Candidate::SPEC_NAME)
       end
 
       it 'yields a connection object' do
@@ -82,7 +82,7 @@ RSpec.describe Multidb::Candidate do
       it 'calls retrieve_connection on the handler' do
         subject.connection
 
-        expect(target).to have_received(:retrieve_connection).with('primary')
+        expect(target).to have_received(:retrieve_connection).with(Multidb::Candidate::SPEC_NAME)
       end
     end
   end
