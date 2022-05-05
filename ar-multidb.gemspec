@@ -25,6 +25,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.8'
-  s.add_development_dependency 'rubocop', '~> 1.12'
+  s.add_development_dependency 'rubocop', '~> 1.28'
+  s.add_development_dependency 'simplecov', '~> 0.21.2'
+  s.add_development_dependency 'simplecov-lcov', '~> 0.8.0'
   s.add_development_dependency 'sqlite3', '~> 1.3'
 end
