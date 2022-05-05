@@ -67,8 +67,7 @@ describe 'Multidb.balancer' do
       context 'undefined connection' do
         it 'raises exception' do
           lambda {
-            Multidb.use(:something) do
-            end
+            Multidb.use(:something) { nil }
           }.should raise_error(ArgumentError)
         end
       end
@@ -151,10 +150,7 @@ describe 'Multidb.balancer' do
             names.push(File.basename(list[0]['file']))
           end
         end
-        names.sort.uniq.should eq [
-          'test-replica3-1.sqlite',
-          'test-replica3-2.sqlite'
-        ]
+        names.sort.uniq.should eq %w[test-replica3-1.sqlite test-replica3-2.sqlite]
       end
     end
   end

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/atombender/multidb.png?branch=master)](https://travis-ci.org/atombender/multidb)
+[![Build Status](https://github.com/OutOfOrder/multidb/actions/workflows/prs.yml/badge.svg)](https://github.com/OutOfOrder/multidb/actions)
 
 # Multidb
 
@@ -14,10 +14,11 @@ Randomized balancing of multiple connections within a group is supported. In the
 
 ## Requirements
 
-* Ruby 2.4 or later.
+* Ruby 2.5 or later.
 * ActiveRecord 5.1 or later.
 
 ## Older releases
+For Ruby 2.4 use version 0.5.1
 For ActiveRecord 4. through 5.0 use version 0.3
 For ActiveRecord older than 4.0 use the gem version 0.1.13
 For ActiveRecord older than 3.0 use 0.1.10
