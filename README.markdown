@@ -1,4 +1,5 @@
 [![Build Status](https://github.com/OutOfOrder/multidb/actions/workflows/prs.yml/badge.svg)](https://github.com/OutOfOrder/multidb/actions)
+[![Coverage Status](https://coveralls.io/repos/github/OutOfOrder/multidb/badge.svg?branch=master)](https://coveralls.io/github/OutOfOrder/multidb?branch=master)
 
 # Multidb
 

@@ -43,11 +43,22 @@ jobs:
       run: bundle exec rspec
     - name: Run rubocop
       run: bundle exec rubocop
+    - name: Coveralls Parallel
+      if: "${{ !env.ACT }}"
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
+        flag-name: run-${{ matrix.ruby }}-${{ matrix.activerecord }}
+        parallel: true
   finish:
     name: All CI Tests Passed
     needs:
       - test
     runs-on: ubuntu-latest
     steps:
-      - name: 'All tests finished'
-        run: echo "All tests finished"
+      - name: Coveralls Finished
+        if: "${{ !env.ACT }}"
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          parallel-finished: true

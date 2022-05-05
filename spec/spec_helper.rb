@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+SimpleCov.start
+
 ENV['RACK_ENV'] ||= 'test'
 
 require 'rspec'
