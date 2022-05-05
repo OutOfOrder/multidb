@@ -11,7 +11,7 @@ Layout/SpaceAroundMethodCallOperator:
   Enabled: true
 Layout/LineLength:
   Exclude:
-    - 'ar-multidb.gemspec'
+    - ar-multidb.gemspec
 Lint/DeprecatedOpenSSLConstant:
   Enabled: true
 Lint/DuplicateElsifCondition:
@@ -24,7 +24,8 @@ Lint/StructNewOverride:
   Enabled: true
 Naming/FileName:
   Exclude:
-    - 'lib/ar-multidb.rb'
+    - lib/ar-multidb.rb
+    - 'gemfiles/*'
 Metrics:
   Enabled: false
 Style/AccessorGrouping:
@@ -61,4 +62,3 @@ Style/RedundantRegexpEscape:
   Enabled: true
 Style/SlicingWithRange:
   Enabled: true
-
