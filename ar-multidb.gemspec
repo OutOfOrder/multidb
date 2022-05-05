@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.5.0'
 
-  s.add_runtime_dependency 'activerecord', '>= 5.1', '< 6.2'
-  s.add_runtime_dependency 'activesupport', '>= 5.1', '< 6.2'
+  s.add_runtime_dependency 'activerecord', '>= 5.1', '< 7.1'
+  s.add_runtime_dependency 'activesupport', '>= 5.1', '< 7.1'
 
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.8'

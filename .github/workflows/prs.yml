@@ -24,7 +24,10 @@ jobs:
         - '5.2'
         - '6.0'
         - '6.1'
+        - '7.0'
         exclude:
+        - ruby: '2.5'
+          activerecord: '7.0'
         - ruby: '3.0'
           activerecord: '5.1'
         - ruby: '3.0'
