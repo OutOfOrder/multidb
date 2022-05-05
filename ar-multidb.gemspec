@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.name        = 'ar-multidb'
   s.version     = Multidb::VERSION
   s.authors     = ['Alexander Staubo', 'Edward Rudd']
-  s.email       = ['alex@bengler.no', 'urkle@outoforder.cc']
+  s.email       = %w[alex@bengler.no urkle@outoforder.cc]
   s.homepage    = ''
   s.summary     = s.description = 'Multidb is an ActiveRecord extension for switching between multiple database connections, such as primary/replica setups.'
   s.license     = 'MIT'
@@ -25,7 +25,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.8'
-  s.add_development_dependency 'rubocop', '~> 1.28'
+  s.add_development_dependency 'rubocop', '~> 1.28.0'
+  s.add_development_dependency 'rubocop-rspec', '~> 2.10.0'
   s.add_development_dependency 'simplecov', '~> 0.21.2'
   s.add_development_dependency 'simplecov-lcov', '~> 0.8.0'
   s.add_development_dependency 'sqlite3', '~> 1.3'

@@ -13,16 +13,32 @@ require 'fileutils'
 $LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 require 'multidb'
 
-require_relative 'helpers'
+Dir[File.join(__dir__, 'support', '**', '*.rb')].sort.each { |f| require f }
 
 RSpec.configure do |config|
-  config.include Helpers
-  config.expect_with(:rspec) { |c| c.syntax = :should }
-  config.before :each do
+  config.disable_monkey_patching!
+  config.order = :random
+  Kernel.srand config.seed
+
+  config.filter_run :focus
+  config.run_all_when_everything_filtered = true
+
+  config.expect_with :rspec do |expectations|
+    expectations.syntax = :expect
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+  end
+
+  config.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
+  end
+
+  config.before do
     ActiveRecord::Base.clear_all_connections!
     Multidb.reset!
   end
-  config.after :each do
+
+  config.after do
+    Multidb.reset!
     Dir.glob(File.expand_path('test*.sqlite', __dir__)).each do |f|
       FileUtils.rm(f)
     end
