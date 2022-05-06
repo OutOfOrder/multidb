@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
-## [upcoming]
+## [0.6.0]
 ### Changed
 - dropped ruby 2.4 support
+- add AR 6.1 and 7.0 support
 
 ## [0.5.1]
 ### Fixed
