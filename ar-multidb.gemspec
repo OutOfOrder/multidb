@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.version     = Multidb::VERSION
   s.authors     = ['Alexander Staubo', 'Edward Rudd']
   s.email       = %w[alex@bengler.no urkle@outoforder.cc]
-  s.homepage    = ''
+  s.homepage    = 'https://github.com/OutOfOrder/multidb'
   s.summary     = s.description = 'Multidb is an ActiveRecord extension for switching between multiple database connections, such as primary/replica setups.'
   s.license     = 'MIT'
   s.metadata['rubygems_mfa_required'] = 'true'
