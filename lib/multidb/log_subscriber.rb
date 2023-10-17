@@ -8,11 +8,11 @@ module Multidb
       super
     end
 
-    def debug(msg)
+    def debug(msg = nil)
       name = Multidb.balancer.current_connection_name
       if name
         db = color("[DB: #{name}]", ActiveSupport::LogSubscriber::GREEN, true)
-        super(db + msg)
+        super(db + msg.to_s)
       else
         super
       end
