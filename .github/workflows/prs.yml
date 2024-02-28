@@ -38,7 +38,7 @@ jobs:
     env:
       BUNDLE_GEMFILE: "${{ github.workspace }}/gemfiles/activerecord-${{ matrix.activerecord }}.gemfile"
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -52,7 +52,7 @@ jobs:
       run: bundle exec rubocop
     - name: Coveralls Parallel
       if: "${{ !env.ACT }}"
-      uses: coverallsapp/github-action@master
+      uses: coverallsapp/github-action@v2
       with:
         github-token: "${{ secrets.GITHUB_TOKEN }}"
         flag-name: run-${{ matrix.ruby }}-${{ matrix.activerecord }}
@@ -65,7 +65,7 @@ jobs:
     steps:
       - name: Coveralls Finished
         if: "${{ !env.ACT }}"
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           parallel-finished: true
