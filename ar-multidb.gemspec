@@ -12,6 +12,8 @@ Gem::Specification.new do |s|
   s.summary     = s.description = 'Multidb is an ActiveRecord extension for switching between multiple database connections, such as primary/replica setups.'
   s.license     = 'MIT'
   s.metadata['rubygems_mfa_required'] = 'true'
+  s.metadata['changelog_uri'] = 'https://github.com/OutOfOrder/multidb/blob/master/CHANGELOG.md'
+  s.metadata['source_code_uri'] = 'https://github.com/OutOfOrder/multidb'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
