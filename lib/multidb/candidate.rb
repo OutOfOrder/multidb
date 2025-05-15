@@ -2,19 +2,14 @@
 
 module Multidb
   class Candidate
-    USE_RAILS_61 = Gem::Version.new(::ActiveRecord::VERSION::STRING) >= Gem::Version.new('6.1')
-    SPEC_NAME = if USE_RAILS_61
-                  'ActiveRecord::Base'
-                else
-                  'primary'
-                end
+    SPEC_NAME = 'ActiveRecord::Base'
 
     def initialize(name, target)
       @name = name
 
       case target
       when Hash
-        target = target.merge(name: 'primary') unless USE_RAILS_61
+        target = target.merge(name: 'primary')
 
         @connection_handler = ActiveRecord::ConnectionAdapters::ConnectionHandler.new
         @connection_handler.establish_connection(target)
