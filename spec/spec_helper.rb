@@ -13,7 +13,7 @@ require 'fileutils'
 $LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 require 'multidb'
 
-Dir[File.join(__dir__, 'support', '**', '*.rb')].sort.each { |f| require f }
+Dir[File.join(__dir__, 'support', '**', '*.rb')].each { |f| require f }
 
 RSpec.configure do |config|
   config.disable_monkey_patching!
@@ -39,7 +39,7 @@ RSpec.configure do |config|
   end
 
   config.before do
-    ActiveRecord::Base.clear_all_connections!
+    ActiveRecord::Base.connection_handler.clear_all_connections!
     Multidb.reset!
   end
 

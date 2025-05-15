@@ -56,7 +56,7 @@ RSpec.describe Multidb::LogSubscriberExtension do
       end
 
       it 'does not change the payload' do
-        expect { subject }.not_to change { event.payload }
+        expect { subject }.not_to(change { event.payload })
       end
     end
   end
