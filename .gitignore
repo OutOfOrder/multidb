@@ -1,7 +1,7 @@
 /pkg
 *~
 \.DS_Store
-*.sqlite
+*.sqlite*
 Gemfile.lock
 Gemfile.local
 gemfiles/*.lock
