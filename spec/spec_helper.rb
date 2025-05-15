@@ -39,7 +39,7 @@ RSpec.configure do |config|
   end
 
   config.before do
-    ActiveRecord::Base.clear_all_connections!
+    ActiveRecord::Base.connection_handler.clear_all_connections!
     Multidb.reset!
   end
 
