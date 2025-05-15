@@ -17,16 +17,6 @@ RSpec.describe Multidb::Candidate do
         handler = subject.instance_variable_get(:@connection_handler)
         expect(handler).to an_instance_of(ActiveRecord::ConnectionAdapters::ConnectionHandler)
       end
-
-      it 'merges the name: primary into the hash', rails: '< 6.1' do
-        handler = instance_double('ActiveRecord::ConnectionAdapters::ConnectionHandler')
-        allow(ActiveRecord::ConnectionAdapters::ConnectionHandler).to receive(:new).and_return(handler)
-        allow(handler).to receive(:establish_connection)
-
-        subject
-
-        expect(handler).to have_received(:establish_connection).with(hash_including(name: 'primary'))
-      end
     end
 
     context 'when target is a connection handler' do

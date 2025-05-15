@@ -36,7 +36,7 @@ RSpec.describe Multidb::Balancer do
       end
 
       it 'sets fallback to false' do
-        expect(subject.fallback).to eq(false)
+        expect(subject.fallback).to be(false)
       end
 
       context 'when rails ENV is development' do
@@ -45,7 +45,7 @@ RSpec.describe Multidb::Balancer do
         end
 
         it 'sets fallback to true' do
-          expect(subject.fallback).to eq(true)
+          expect(subject.fallback).to be(true)
         end
       end
 
@@ -55,7 +55,7 @@ RSpec.describe Multidb::Balancer do
         end
 
         it 'sets fallback to true' do
-          expect(subject.fallback).to eq(true)
+          expect(subject.fallback).to be(true)
         end
       end
     end
@@ -78,7 +78,7 @@ RSpec.describe Multidb::Balancer do
       end
 
       it 'sets fallback to true' do
-        expect(subject.fallback).to eq(true)
+        expect(subject.fallback).to be(true)
       end
     end
 
