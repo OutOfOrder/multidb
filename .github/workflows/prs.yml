@@ -26,6 +26,10 @@ jobs:
         - '7.2'
         - '8.0'
         exclude:
+        - ruby: '3.0'
+          activerecord: '7.2'
+        - ruby: '3.0'
+          activerecord: '8.0'
         - ruby: '3.1'
           activerecord: '8.0'
     env:
