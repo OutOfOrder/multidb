@@ -1,4 +1,4 @@
-require:
+plugins:
   - rubocop-rspec
 
 AllCops:
@@ -8,7 +8,7 @@ AllCops:
   Exclude:
     - '**/vendor/**/*'
 
-Gemspec/DateAssignment: # new in 1.10
+Gemspec/DeprecatedAttributeAssignment: # new in 1.30
   Enabled: true
 Gemspec/RequireMFA: # new in 1.23
   Enabled: true
@@ -27,9 +27,6 @@ Layout/SpaceBeforeBrackets: # new in 1.7
 
 Lint/AmbiguousAssignment: # new in 1.7
   Enabled: true
-Lint/AmbiguousBlockAssociation:
-  IgnoredMethods:
-    - change
 Lint/AmbiguousOperatorPrecedence: # new in 1.21
   Enabled: true
 Lint/AmbiguousRange: # new in 1.19
@@ -110,6 +107,8 @@ RSpec/MultipleExpectations:
   Enabled: false
 RSpec/NestedGroups:
   Max: 4
+RSpec/VerifiedDoubleReference: # new in 2.10
+  Enabled: false
 
 Security/CompoundHash: # new in 1.28
   Enabled: true
