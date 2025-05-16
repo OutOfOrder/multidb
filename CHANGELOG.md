@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
+## [0.8.0]
+### Changed
+- dropped support for Ruby < 3.0
+- dropped support for AR < 7.1
+- add support for Rails 7.1 and 8.0
+
 ## [0.7.0]
 ### Changed
 - add AR 7.1 support
