@@ -17,8 +17,12 @@ RSpec.describe Multidb::LogSubscriberExtension do
         msg
       end
 
-      def color(text, _color, _bold)
-        text
+      def color(text, color, options = {})
+        if options[:bold]
+          "Bold: Color #{color}: #{text}"
+        else
+          "Color #{color}: #{text}"
+        end
       end
     end
 
@@ -65,13 +69,13 @@ RSpec.describe Multidb::LogSubscriberExtension do
     subject { instance.debug('message') }
 
     it 'prepends the db name to the message' do
-      is_expected.to include('[DB: default]')
+      is_expected.to start_with "Bold: Color \e[32m: [DB: default]"
     end
 
     context 'when a replica is active' do
       it 'prepends the replica dbname to the message' do
         Multidb.use(:replica1) {
-          is_expected.to include('[DB: replica1')
+          is_expected.to start_with "Bold: Color \e[32m: [DB: replica1"
         }
       end
     end
