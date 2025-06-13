@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.8.1]
 ### Changes
 - Updated Log subscriber mixin to utilize Rails 7.1's contract for "color"
+- Removed old backward compat path for Rails < 6.1
 
 ## [0.8.0]
 ### Changed
