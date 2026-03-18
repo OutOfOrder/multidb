@@ -25,13 +25,18 @@ jobs:
         - '7.1'
         - '7.2'
         - '8.0'
+        - '8.1'
         exclude:
         - ruby: '3.0'
           activerecord: '7.2'
         - ruby: '3.0'
           activerecord: '8.0'
+        - ruby: '3.0'
+          activerecord: '8.1'
         - ruby: '3.1'
           activerecord: '8.0'
+        - ruby: '3.1'
+          activerecord: '8.1'
     env:
       BUNDLE_GEMFILE: "${{ github.workspace }}/gemfiles/activerecord-${{ matrix.activerecord }}.gemfile"
     steps:
